@@ -17,7 +17,7 @@ body{
     border: 2px solid pink;
 }
 .calcScreen{
-    height: 100px;
+    height: 70px;
     width: 200px;
     border: 2px solid yellow;
     
@@ -33,4 +33,12 @@ body{
 .calcPadButton{
     border: 2px solid red;
     
+}
+.calcSpecialButtonDiv{
+border: 2px solid pink;
+height: 30px;
+width: 200px;
+display: flex;
+justify-content: center;
+align-items: center;
 }

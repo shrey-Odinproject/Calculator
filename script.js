@@ -11,16 +11,25 @@ function operate(a, op, b) {
     else { return 'INVALID' }
 }
 
-let buttonsOnPad = 15
-let buttonPadRow=5
-let buttonPadCol=3
+let buttonsOnPad = 16
+let buttonPadRow = 4
+let buttonPadCol = 4
 
 const body = document.querySelector('body')
-const calc = body.querySelector('.calculator')
+const calc = body.querySelector('.calculator') //main div housing calculator
 const calcScreen = document.createElement('div')
 
 calcScreen.classList.add('calcScreen')
 calc.appendChild(calcScreen)
+
+const calcSpecialButtonDiv=document.createElement('div')
+calcSpecialButtonDiv.classList.add('calcSpecialButtonDiv')
+calc.appendChild(calcSpecialButtonDiv)
+
+const calcClear=document.createElement('button')
+calcClear.textContent='CLEAR'
+calcSpecialButtonDiv.appendChild(calcClear)
+calcClear.addEventListener('click',()=>calcScreen.textContent='')
 
 const calcPad = document.createElement('div')
 calcPad.setAttribute('style',
@@ -37,10 +46,37 @@ function makeButtons() {
     for (let i = 0; i < buttonsOnPad; i++) {
         const calcPadButton = document.createElement('button')
         calcPadButton.classList.add('calcPadButton')
-        calcPadButton.textContent='0'
+        if (i < 10) { calcPadButton.textContent = i }
+        switch (i) {
+            case 10:
+                calcPadButton.textContent = '.'
+                break
+
+            case 11:
+                calcPadButton.textContent = '+'
+                break;
+            case 12:
+                calcPadButton.textContent = '-'
+                break;
+            case 13:
+                calcPadButton.textContent = '*'
+                break;
+            case 14:
+                calcPadButton.textContent = '/'
+                break;
+            case 15:
+                calcPadButton.textContent = '='
+                break;
+
+        }
+
         calcPad.appendChild(calcPadButton)
     }
 }
 
 makeButtons()
 
+let calcPadButtons = document.querySelectorAll('.calcPadButton')
+calcPadButtons.forEach((btn) => {
+    btn.addEventListener('click', () => calcScreen.textContent = btn.textContent)
+})
