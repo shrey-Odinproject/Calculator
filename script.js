@@ -1,6 +1,6 @@
-function add(a, b) { return a + b }
-function sub(a, b) { return a - b }
-function mul(a, b) { return a * b }
+function add(a, b) { return Math.round((a + b) * 100) / 100 }
+function sub(a, b) { return Math.round((a - b) * 100) / 100 }
+function mul(a, b) { return Math.round((a * b) * 100) / 100 }
 function divide(a, b) { return Math.round((a / b) * 100) / 100 }
 
 function operate(a, op, b) {
@@ -22,14 +22,20 @@ const calcScreen = document.createElement('div')
 calcScreen.classList.add('calcScreen')
 calc.appendChild(calcScreen)
 
-const calcSpecialButtonDiv=document.createElement('div')
+const calcSpecialButtonDiv = document.createElement('div')
 calcSpecialButtonDiv.classList.add('calcSpecialButtonDiv')
 calc.appendChild(calcSpecialButtonDiv)
 
-const calcClear=document.createElement('button')
-calcClear.textContent='CLEAR'
+const calcClear = document.createElement('button')
+calcClear.textContent = 'CLEAR'
 calcSpecialButtonDiv.appendChild(calcClear)
-calcClear.addEventListener('click',()=>calcScreen.textContent='')
+calcClear.addEventListener('click', () => {
+    calcScreen.textContent = ''
+    displayValue = 0
+    num1 = undefined
+    num2 = undefined
+    operand = undefined
+})
 
 const calcPad = document.createElement('div')
 calcPad.setAttribute('style',
@@ -40,7 +46,7 @@ calcPad.setAttribute('style',
 calcPad.classList.add('calcPad')
 calc.appendChild(calcPad)
 
-calcScreen.textContent = '1+3'
+//calcScreen.textContent = '1+3'
 
 function makeButtons() {
     for (let i = 0; i < buttonsOnPad; i++) {
@@ -76,7 +82,37 @@ function makeButtons() {
 
 makeButtons()
 
+let displayValue = 0 // stores number present on screen
+let num1
+let num2
+let operand
+
 let calcPadButtons = document.querySelectorAll('.calcPadButton')
 calcPadButtons.forEach((btn) => {
-    btn.addEventListener('click', () => calcScreen.textContent = btn.textContent)
+    btn.addEventListener('click', () => {
+        calcScreen.textContent += btn.textContent
+
+
+        if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '/' || btn.textContent === '*') && num2 === undefined) {
+            num1 = displayValue
+            operand = btn.textContent
+            calcScreen.textContent = ''
+            displayValue = 0
+        }
+        if (operand !== undefined) {
+            num2 = displayValue
+        }
+        if (btn.textContent == '=' && num1 !== undefined && num2 !== undefined) {
+            let ans = operate(num1, operand, num2)
+            calcScreen.textContent = ans
+        }
+
+
+        displayValue = +calcScreen.textContent // holds number
+
+        //console.log((isNaN(parseFloat(`${displayValue}`))))
+
+
+    })
+
 })
