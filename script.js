@@ -90,10 +90,34 @@ let operand
 let calcPadButtons = document.querySelectorAll('.calcPadButton')
 calcPadButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-        calcScreen.textContent += btn.textContent
+        if (num1 === undefined && num2 === undefined /*&& operand === undefined*/) {
+
+            if (isNaN(parseFloat(btn.textContent))) {
+                operand = btn.textContent
+                calcScreen.textContent = ''
+                num1 = displayValue
+                displayValue = 0
+            }
+
+            else {
+                calcScreen.textContent += btn.textContent
+                displayValue = +calcScreen.textContent // holds number
+            }
+
+        }
+        else if (num1!==undefined && num2===undefined){
+            
+        }
+    }
 
 
-        if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '/' || btn.textContent === '*') && num2 === undefined) {
+        //console.log((isNaN(parseFloat(`${displayValue}`))))
+
+
+    })
+
+})
+/*   if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '/' || btn.textContent === '*')) {
             num1 = displayValue
             operand = btn.textContent
             calcScreen.textContent = ''
@@ -106,13 +130,4 @@ calcPadButtons.forEach((btn) => {
             let ans = operate(num1, operand, num2)
             calcScreen.textContent = ans
         }
-
-
-        displayValue = +calcScreen.textContent // holds number
-
-        //console.log((isNaN(parseFloat(`${displayValue}`))))
-
-
-    })
-
-})
+        */
