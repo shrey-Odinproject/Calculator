@@ -1,10 +1,13 @@
 function add(a, b) { return Math.round((a + b) * 100) / 100 }
 function sub(a, b) { return Math.round((a - b) * 100) / 100 }
 function mul(a, b) { return Math.round((a * b) * 100) / 100 }
-function divide(a, b) { return Math.round((a / b) * 100) / 100 }
+function divide(a, b) {
+    let divResult = Math.round((a / b) * 100) / 100
+    if (divResult == Infinity || divResult === -Infinity) { return 'NO CAN DO !!!! prs clr' }// snarky msg
+    else { return divResult }
+}
 
 function operate(a, op, b) {
-    if (b===0){return 'NO CAN DO !!!! prs clr'}
     if (op === '+') { return add(a, b) }
     else if (op === '-') { return sub(a, b) }
     else if (op === '*') { return mul(a, b) }
@@ -32,14 +35,18 @@ calcClear.textContent = 'CLEAR'
 calcSpecialButtonDiv.appendChild(calcClear)
 calcClear.addEventListener('click', () => {
     calcScreen.textContent = ''
-    secondScreen.textContent=''
+    secondScreen.textContent = ''
     displayValue = undefined
     num1 = undefined
     num2 = undefined
     operand = undefined
 })
-const secondScreen=document.createElement('div')
-calcSpecialButtonDiv.appendChild(secondScreen)
+const secondScreen = document.createElement('div')
+calc.appendChild(secondScreen)
+
+const backButton=document.createElement('button')
+backButton.textContent='BACK'
+calcSpecialButtonDiv.appendChild(backButton)
 
 const calcPad = document.createElement('div')
 calcPad.setAttribute('style',
@@ -60,6 +67,7 @@ function makeButtons() {
         switch (i) {
             case 10:
                 calcPadButton.textContent = '.'
+                calcPadButton.setAttribute('id', 'decimal')
                 break
 
             case 11:
@@ -92,9 +100,11 @@ let num2
 let operand
 
 let calcPadButtons = document.querySelectorAll('.calcPadButton')
+let decimalButton = document.getElementById('decimal') // we enable disable it so that u cant type 12.8.9.8 etc type of nums
 
 calcPadButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
+        decimalButton.disabled = false
         if (num1 === undefined && num2 === undefined) {// oprts and op undefined
 
             if (btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') {
@@ -108,31 +118,34 @@ calcPadButtons.forEach((btn) => {
                 calcScreen.textContent += btn.textContent
                 displayValue = +calcScreen.textContent // holds number
             }
+            if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
 
         }
         else if (num1 !== undefined && num2 === undefined) {// only 2nd opr undefined
-            if (btn.textContent === '=' && displayValue!==undefined) {
+            decimalButton.disabled = false
+            if (btn.textContent === '=' && displayValue !== undefined) {
                 num2 = displayValue
                 displayValue = operate(num1, operand, num2) // holds result of operation
                 calcScreen.textContent = displayValue
-                secondScreen.textContent=''
+                secondScreen.textContent = ''
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue === undefined) { // this case is for when u change ur mind about wich operation, overwrites operand eg 3+, change to 3*
                 operand = btn.textContent
                 calcScreen.textContent = ''
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue !== undefined) {// displaying intermediate result is nt possible
-                num1=operate(num1,operand,displayValue)
+                num1 = operate(num1, operand, displayValue)
                 //calcScreen.textContent=num1
-                secondScreen.textContent=`result:${num1}` // intermediate result on console
-                operand=btn.textContent
-                calcScreen.textContent=''
-                displayValue=undefined
+                secondScreen.textContent = num1 // intermediate result on console
+                operand = btn.textContent
+                calcScreen.textContent = ''
+                displayValue = undefined
             }
             else if (!isNaN(parseFloat(btn.textContent)) || btn.textContent === '.') { // this wont let u change operand once num1,operand and display value are NOT undefined
                 calcScreen.textContent += btn.textContent
                 displayValue = +calcScreen.textContent
             }
+            if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
         }
     }
 
