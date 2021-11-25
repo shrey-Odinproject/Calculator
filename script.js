@@ -44,9 +44,18 @@ calcClear.addEventListener('click', () => {
 const secondScreen = document.createElement('div')
 calc.appendChild(secondScreen)
 
-const backButton=document.createElement('button')
-backButton.textContent='BACK'
+const backButton = document.createElement('button')
+backButton.textContent = 'BACK'
 calcSpecialButtonDiv.appendChild(backButton)
+
+backButton.addEventListener('click', () => {
+    if (displayValue !== undefined) {
+        displayValue = parseInt(displayValue/10)
+    }
+    if (calcScreen.textContent !== '') {
+        calcScreen.textContent = displayValue
+    }
+})
 
 const calcPad = document.createElement('div')
 calcPad.setAttribute('style',
@@ -109,6 +118,7 @@ calcPadButtons.forEach((btn) => {
 
             if (btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') {
                 operand = btn.textContent
+                //secondScreen.textContent = displayValue + operand
                 calcScreen.textContent = ''
                 num1 = displayValue
                 displayValue = undefined
@@ -131,12 +141,13 @@ calcPadButtons.forEach((btn) => {
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue === undefined) { // this case is for when u change ur mind about wich operation, overwrites operand eg 3+, change to 3*
                 operand = btn.textContent
+               // secondScreen.textContent = operand
                 calcScreen.textContent = ''
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue !== undefined) {// displaying intermediate result is nt possible
                 num1 = operate(num1, operand, displayValue)
                 //calcScreen.textContent=num1
-                secondScreen.textContent = num1 // intermediate result on console
+                secondScreen.textContent = num1  // intermediate result on console
                 operand = btn.textContent
                 calcScreen.textContent = ''
                 displayValue = undefined
