@@ -14,35 +14,50 @@ body{
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    border: 2px solid pink;
+    border: 2px solid cyan;
 }
 .calcScreen{
-    height: 70px;
-    width: 200px;
-    border: 2px solid yellow;
+    height: 100px;
+    width: 500px;
+    border: 2px solid cyan;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0, 158, 137);
     
+}
+.secondScreen{
+    width:500px;
+    height:40px;
+    background-color: rgb(0, 158, 137);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .calcPad{
-    height: 200px;
-    width: 200px;
-    border: 2px solid blue;
+    height: 320px;
+    width: 500px;
+    /*border: 2px solid blue;*/
     display: grid;
-    
-    
 }
 .calcPadButton{
-    border: 2px solid red;
+    /*border: 2px solid red;*/
+    background-color: teal;
     
 }
 .calcSpecialButtonDiv{
-border: 2px solid pink;
-height: 30px;
-width: 200px;
+border: 2px solid cyan;
+height: 80px;
+width: 500px;
 display: flex;
 justify-content: center;
 align-items: center;
 }
-
+.calcSpecialButtonDiv button{
+    flex: auto;
+    height: 80px;
+    background-color:aquamarine ;
+}
 /*#operand{
     border: pink;
 }
@@ -53,5 +68,5 @@ align-items: center;
     border: peachpuff;
 }*/
 .operandSelected{
-    background-color: aquamarine;
+    background-color: rgb(8, 141, 218);
 }
