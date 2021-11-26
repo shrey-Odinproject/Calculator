@@ -3,7 +3,7 @@ function sub(a, b) { return Math.round((a - b) * 100) / 100 }
 function mul(a, b) { return Math.round((a * b) * 100) / 100 }
 function divide(a, b) {
     let divResult = Math.round((a / b) * 100) / 100
-    if (divResult == Infinity || divResult === -Infinity) { return 'NO CAN DO !!!! prs clr' }// snarky msg
+    if (b === 0) { return 'NO CAN DO !!!! prs clr' }// snarky msg
     else { return divResult }
 }
 
@@ -47,7 +47,7 @@ const secondScreen = document.createElement('div')
 calc.appendChild(secondScreen)
 
 const backButton = document.createElement('button')
-backButton.textContent = 'BACKSPACE'
+backButton.textContent = '<<=='
 calcSpecialButtonDiv.appendChild(backButton)
 
 backButton.addEventListener('click', () => {
@@ -151,7 +151,7 @@ calcPadButtons.forEach((btn) => {
         if (num1 === undefined && num2 === undefined) {// oprts and op undefined
 
             if (btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') {
-                if (displayValue === undefined) { // to make entering -4 as input possible THIS nt implemented fr intermediate eg -5 * -3 not possible it becomes -5-3
+                if (displayValue === undefined && btn.textContent === '-') { // to make entering -4 as input possible THIS nt implemented fr intermediate eg -5 * -3 not possible it becomes -5-3
                     calcScreen.textContent += btn.textContent
                     displayValue = +calcScreen.textContent
                 }
@@ -159,6 +159,7 @@ calcPadButtons.forEach((btn) => {
                     operand = btn.textContent
                     calcScreen.textContent = ''
                     num1 = displayValue
+                    secondScreen.textContent = num1
                     displayValue = undefined
                     btn.classList.add('operandSelected')
                 }
@@ -209,7 +210,25 @@ calcPadButtons.forEach((btn) => {
 })
 
 
-document.addEventListener('keydown',(e)=>{
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+
+        calcScreen.textContent = ''
+        secondScreen.textContent = ''
+        displayValue = undefined
+        num1 = undefined
+        num2 = undefined
+        operand = undefined
+        backButton.disabled = false
+        calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+
+    }
+    if (e.key === 'Backspace') {
+        if (calcScreen.textContent !== '') {// whenever text content is blank displayvalue is undefined so we dont need to mention it seprately mention it
+            calcScreen.textContent = calcScreen.textContent.substring(0, (calcScreen.textContent).length - 1)
+            displayValue = +calcScreen.textContent
+        }
+    }
     decimalButton.disabled = false
     if (num1 === undefined && num2 === undefined) {// oprts and op undefined
 
@@ -222,8 +241,10 @@ document.addEventListener('keydown',(e)=>{
                 operand = e.key
                 calcScreen.textContent = ''
                 num1 = displayValue
+                secondScreen.textContent = num1
                 displayValue = undefined
-                btn.classList.add('operandSelected')
+                calcPadButtons.forEach((btn)=>{if (e.key===btn.textContent){btn.classList.add('operandSelected')}})
+                
             }
         }
 
@@ -248,7 +269,7 @@ document.addEventListener('keydown',(e)=>{
             operand = e.key
             calcScreen.textContent = ''
             calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
-            btn.classList.add('operandSelected')
+            calcPadButtons.forEach((btn)=>{if (e.key===btn.textContent){btn.classList.add('operandSelected')}})
         }
         else if ((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && displayValue !== undefined) {// displaying intermediate result is nt possible
             num1 = operate(num1, operand, displayValue)
@@ -257,7 +278,7 @@ document.addEventListener('keydown',(e)=>{
             calcScreen.textContent = ''
             displayValue = undefined
             calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
-            btn.classList.add('operandSelected')
+            calcPadButtons.forEach((btn)=>{if (e.key===btn.textContent){btn.classList.add('operandSelected')}})
         }
         else if (!isNaN(parseFloat(e.key)) || e.key === '.') { // this wont let u change operand once num1,operand and display value are NOT undefined
             calcScreen.textContent += e.key
@@ -265,5 +286,5 @@ document.addEventListener('keydown',(e)=>{
 
         }
         if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
-    }  
+    }
 })
