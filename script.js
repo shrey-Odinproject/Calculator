@@ -40,20 +40,20 @@ calcClear.addEventListener('click', () => {
     num1 = undefined
     num2 = undefined
     operand = undefined
+    backButton.disabled = false
+    calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
 })
 const secondScreen = document.createElement('div')
 calc.appendChild(secondScreen)
 
 const backButton = document.createElement('button')
-backButton.textContent = 'BACK'
+backButton.textContent = 'BACKSPACE'
 calcSpecialButtonDiv.appendChild(backButton)
 
 backButton.addEventListener('click', () => {
-    if (displayValue !== undefined) {
-        displayValue = parseInt(displayValue/10)
-    }
-    if (calcScreen.textContent !== '') {
-        calcScreen.textContent = displayValue
+    if (calcScreen.textContent !== '') {// whenever text content is blank displayvalue is undefined so we dont need to mention it seprately mention it
+        calcScreen.textContent = calcScreen.textContent.substring(0, (calcScreen.textContent).length - 1)
+        displayValue = +calcScreen.textContent
     }
 })
 
@@ -66,33 +66,67 @@ calcPad.setAttribute('style',
 calcPad.classList.add('calcPad')
 calc.appendChild(calcPad)
 
-//calcScreen.textContent = '1+3'
 
 function makeButtons() {
     for (let i = 0; i < buttonsOnPad; i++) {
         const calcPadButton = document.createElement('button')
         calcPadButton.classList.add('calcPadButton')
-        if (i < 10) { calcPadButton.textContent = i }
+        //if (i < 10) { calcPadButton.textContent = i }
         switch (i) {
+            case 0:
+                calcPadButton.textContent = 1
+                break
+            case 1:
+                calcPadButton.textContent = 2
+                break
+            case 2:
+                calcPadButton.textContent = 3
+                break
+            case 4:
+                calcPadButton.textContent = 4
+                break
+            case 5:
+                calcPadButton.textContent = 5
+                break
+            case 6:
+                calcPadButton.textContent = 6
+                break
+            case 8:
+                calcPadButton.textContent = 7
+                break
+            case 9:
+                calcPadButton.textContent = 8
+                break
             case 10:
+                calcPadButton.textContent = 9
+                break
+            case 13:
+                calcPadButton.textContent = 0
+                break
+            case 12:
                 calcPadButton.textContent = '.'
                 calcPadButton.setAttribute('id', 'decimal')
                 break
 
-            case 11:
+            case 3:
                 calcPadButton.textContent = '+'
+                calcPadButton.setAttribute('id', 'operand')
                 break;
-            case 12:
+            case 7:
                 calcPadButton.textContent = '-'
+                calcPadButton.setAttribute('id', 'operand')
                 break;
-            case 13:
+            case 11:
                 calcPadButton.textContent = '*'
-                break;
-            case 14:
-                calcPadButton.textContent = '/'
+                calcPadButton.setAttribute('id', 'operand')
                 break;
             case 15:
+                calcPadButton.textContent = '/'
+                calcPadButton.setAttribute('id', 'operand')
+                break;
+            case 14:
                 calcPadButton.textContent = '='
+                calcPadButton.setAttribute('id', 'equalsTo')
                 break;
 
         }
@@ -117,11 +151,17 @@ calcPadButtons.forEach((btn) => {
         if (num1 === undefined && num2 === undefined) {// oprts and op undefined
 
             if (btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') {
-                operand = btn.textContent
-                //secondScreen.textContent = displayValue + operand
-                calcScreen.textContent = ''
-                num1 = displayValue
-                displayValue = undefined
+                if (displayValue === undefined) { // to make entering -4 as input possible THIS nt implemented fr intermediate eg -5 * -3 not possible it becomes -5-3
+                    calcScreen.textContent += btn.textContent
+                    displayValue = +calcScreen.textContent
+                }
+                else {
+                    operand = btn.textContent
+                    calcScreen.textContent = ''
+                    num1 = displayValue
+                    displayValue = undefined
+                    btn.classList.add('operandSelected')
+                }
             }
 
             else if (!isNaN(parseFloat(btn.textContent)) || btn.textContent === '.') { // screen can only display numbers and .
@@ -137,33 +177,33 @@ calcPadButtons.forEach((btn) => {
                 num2 = displayValue
                 displayValue = operate(num1, operand, num2) // holds result of operation
                 calcScreen.textContent = displayValue
-                secondScreen.textContent = ''
+                secondScreen.textContent = 'PRESS CLEAR '
+                backButton.disabled = true
+                calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue === undefined) { // this case is for when u change ur mind about wich operation, overwrites operand eg 3+, change to 3*
                 operand = btn.textContent
-               // secondScreen.textContent = operand
                 calcScreen.textContent = ''
+                calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+                btn.classList.add('operandSelected')
             }
             else if ((btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '*' || btn.textContent === '/') && displayValue !== undefined) {// displaying intermediate result is nt possible
                 num1 = operate(num1, operand, displayValue)
-                //calcScreen.textContent=num1
                 secondScreen.textContent = num1  // intermediate result on console
                 operand = btn.textContent
                 calcScreen.textContent = ''
                 displayValue = undefined
+                calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+                btn.classList.add('operandSelected')
             }
             else if (!isNaN(parseFloat(btn.textContent)) || btn.textContent === '.') { // this wont let u change operand once num1,operand and display value are NOT undefined
                 calcScreen.textContent += btn.textContent
                 displayValue = +calcScreen.textContent
+
             }
             if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
         }
     }
-
-
-        //console.log((isNaN(parseFloat(displayValue))))
-
-
     )
 
 })
