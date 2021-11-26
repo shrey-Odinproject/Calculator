@@ -207,3 +207,63 @@ calcPadButtons.forEach((btn) => {
     )
 
 })
+
+
+document.addEventListener('keydown',(e)=>{
+    decimalButton.disabled = false
+    if (num1 === undefined && num2 === undefined) {// oprts and op undefined
+
+        if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+            if (displayValue === undefined) { // to make entering -4 as input possible THIS nt implemented fr intermediate eg -5 * -3 not possible it becomes -5-3
+                calcScreen.textContent += e.key
+                displayValue = +calcScreen.textContent
+            }
+            else {
+                operand = e.key
+                calcScreen.textContent = ''
+                num1 = displayValue
+                displayValue = undefined
+                btn.classList.add('operandSelected')
+            }
+        }
+
+        else if (!isNaN(parseFloat(e.key)) || e.key === '.') { // screen can only display numbers and .
+            calcScreen.textContent += e.key
+            displayValue = +calcScreen.textContent // holds number
+        }
+        if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
+
+    }
+    else if (num1 !== undefined && num2 === undefined) {// only 2nd opr undefined
+        decimalButton.disabled = false
+        if (e.key === '=' && displayValue !== undefined) {
+            num2 = displayValue
+            displayValue = operate(num1, operand, num2) // holds result of operation
+            calcScreen.textContent = displayValue
+            secondScreen.textContent = 'PRESS CLEAR '
+            backButton.disabled = true
+            calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+        }
+        else if ((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && displayValue === undefined) { // this case is for when u change ur mind about wich operation, overwrites operand eg 3+, change to 3*
+            operand = e.key
+            calcScreen.textContent = ''
+            calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+            btn.classList.add('operandSelected')
+        }
+        else if ((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && displayValue !== undefined) {// displaying intermediate result is nt possible
+            num1 = operate(num1, operand, displayValue)
+            secondScreen.textContent = num1  // intermediate result on console
+            operand = e.key
+            calcScreen.textContent = ''
+            displayValue = undefined
+            calcPadButtons.forEach((btn) => btn.classList.remove('operandSelected'))
+            btn.classList.add('operandSelected')
+        }
+        else if (!isNaN(parseFloat(e.key)) || e.key === '.') { // this wont let u change operand once num1,operand and display value are NOT undefined
+            calcScreen.textContent += e.key
+            displayValue = +calcScreen.textContent
+
+        }
+        if (calcScreen.textContent.includes('.')) { decimalButton.disabled = true }
+    }  
+})
